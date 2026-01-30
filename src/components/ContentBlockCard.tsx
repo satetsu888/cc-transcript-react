@@ -4,16 +4,20 @@ import {
   Terminal, Check, Circle, CheckCircle2, CircleDot,
   MessageCircleQuestion, Pencil, Link2,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { format } from 'date-fns'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import type { DisplayBlock } from '../types'
+import type { DisplayBlock, ColorScheme, TranscriptClassNames, TranscriptTheme } from '../types'
 
 export interface ContentBlockCardProps {
   block: DisplayBlock
+  colorScheme?: ColorScheme
+  classNames?: TranscriptClassNames
+  theme?: TranscriptTheme
   customBlockRenderers?: Record<string, (block: DisplayBlock) => React.ReactNode | null>
 }
 
@@ -52,14 +56,19 @@ function getBlockContainerStyle(block: DisplayBlock) {
   if (isSecondaryBlock(block)) {
     return {
       wrapper: 'cct-ml-4',
-      container: 'cct-border cct-border-gray-200 cct-bg-gray-50/50',
+      container: 'cct-border cct-border-[var(--cct-border-default)] cct-bg-[var(--cct-bg-secondary)]',
       header: 'cct-px-3 cct-py-2',
     }
   }
-  const borderColor = block.eventType === 'user' ? 'cct-border-blue-200' : 'cct-border-green-200'
+  const borderColor = block.eventType === 'user'
+    ? 'cct-border-[var(--cct-user-border)]'
+    : 'cct-border-[var(--cct-assistant-border)]'
+  const bgColor = block.eventType === 'user'
+    ? 'cct-bg-[var(--cct-user-bg)]'
+    : 'cct-bg-[var(--cct-assistant-bg)]'
   return {
     wrapper: '',
-    container: `cct-border-2 ${borderColor} cct-bg-white`,
+    container: `cct-border-2 ${borderColor} ${bgColor}`,
     header: 'cct-px-4 cct-py-3',
   }
 }
@@ -88,12 +97,12 @@ function getIcon(block: DisplayBlock) {
 
 function getIconStyle(block: DisplayBlock) {
   if (isSecondaryBlock(block)) {
-    return 'cct-bg-gray-200 cct-text-gray-500'
+    return 'cct-bg-[var(--cct-secondary-icon-bg)] cct-text-[var(--cct-text-tertiary)]'
   }
   if (block.eventType === 'user') {
-    return 'cct-bg-blue-100 cct-text-blue-600'
+    return 'cct-bg-[var(--cct-user-icon-bg)] cct-text-[var(--cct-user-icon-text)]'
   }
-  return 'cct-bg-green-100 cct-text-green-600'
+  return 'cct-bg-[var(--cct-assistant-icon-bg)] cct-text-[var(--cct-assistant-icon-text)]'
 }
 
 // --- Specialized tool helpers ---
@@ -181,27 +190,27 @@ function extractCommandOutput(content: string): string {
 
 function TodoListBlock({ todos }: { todos: TodoItem[] }) {
   if (todos.length === 0) {
-    return <div className="cct-text-sm cct-text-gray-500 cct-italic">No tasks</div>
+    return <div className="cct-text-sm cct-text-[var(--cct-text-tertiary)] cct-italic">No tasks</div>
   }
   return (
     <div className="cct-space-y-1.5">
       {todos.map((todo, i) => (
         <div key={i} className="cct-flex cct-items-start cct-gap-2">
           {todo.status === 'completed' && (
-            <CheckCircle2 className="cct-h-4 cct-w-4 cct-text-green-500 cct-flex-shrink-0 cct-mt-0.5" />
+            <CheckCircle2 className="cct-h-4 cct-w-4 cct-text-[var(--cct-todo-completed)] cct-flex-shrink-0 cct-mt-0.5" />
           )}
           {todo.status === 'in_progress' && (
-            <CircleDot className="cct-h-4 cct-w-4 cct-text-blue-500 cct-flex-shrink-0 cct-mt-0.5" />
+            <CircleDot className="cct-h-4 cct-w-4 cct-text-[var(--cct-todo-in-progress)] cct-flex-shrink-0 cct-mt-0.5" />
           )}
           {todo.status === 'pending' && (
-            <Circle className="cct-h-4 cct-w-4 cct-text-gray-400 cct-flex-shrink-0 cct-mt-0.5" />
+            <Circle className="cct-h-4 cct-w-4 cct-text-[var(--cct-todo-pending)] cct-flex-shrink-0 cct-mt-0.5" />
           )}
           <span
             className={cn(
               'cct-text-sm',
-              todo.status === 'completed' && 'cct-text-gray-500 cct-line-through',
-              todo.status === 'in_progress' && 'cct-text-blue-700 cct-font-medium',
-              todo.status === 'pending' && 'cct-text-gray-700'
+              todo.status === 'completed' && 'cct-text-[var(--cct-text-tertiary)] cct-line-through',
+              todo.status === 'in_progress' && 'cct-text-[var(--cct-selected-text)] cct-font-medium',
+              todo.status === 'pending' && 'cct-text-[var(--cct-text-body)]'
             )}
           >
             {todo.content}
@@ -220,7 +229,7 @@ function AskUserQuestionBlock({
   answers: Record<string, string>
 }) {
   if (questions.length === 0) {
-    return <div className="cct-text-sm cct-text-gray-500 cct-italic">No questions</div>
+    return <div className="cct-text-sm cct-text-[var(--cct-text-tertiary)] cct-italic">No questions</div>
   }
   return (
     <div className="cct-space-y-4">
@@ -228,12 +237,12 @@ function AskUserQuestionBlock({
         const answer = answers[q.question]
         const isOtherAnswer = answer && !isOptionSelected(answer, q.options)
         return (
-          <div key={i} className="cct-rounded-lg cct-border cct-border-gray-200 cct-bg-white cct-p-3">
-            <div className="cct-mb-1 cct-flex cct-items-center cct-gap-1.5 cct-text-xs cct-font-medium cct-text-gray-500">
+          <div key={i} className="cct-rounded-[var(--cct-border-radius-sm)] cct-border cct-border-[var(--cct-border-default)] cct-bg-[var(--cct-bg-primary)] cct-p-3">
+            <div className="cct-mb-1 cct-flex cct-items-center cct-gap-1.5 cct-text-xs cct-font-medium cct-text-[var(--cct-text-tertiary)]">
               <MessageCircleQuestion className="cct-h-3.5 cct-w-3.5" />
               {q.header}
             </div>
-            <div className="cct-mb-3 cct-font-medium cct-text-gray-900">{q.question}</div>
+            <div className="cct-mb-3 cct-font-medium cct-text-[var(--cct-text-primary)]">{q.question}</div>
             <div className="cct-space-y-2">
               {q.options.map((opt, j) => {
                 const isSelected = answer === opt.label
@@ -242,36 +251,36 @@ function AskUserQuestionBlock({
                     key={j}
                     className={cn(
                       'cct-flex cct-items-start cct-gap-2 cct-rounded-md cct-p-2 cct-transition-colors',
-                      isSelected && 'cct-bg-blue-50'
+                      isSelected && 'cct-bg-[var(--cct-selected-bg)]'
                     )}
                   >
                     {isSelected ? (
-                      <CircleDot className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-blue-500" />
+                      <CircleDot className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-[var(--cct-selected-icon)]" />
                     ) : (
-                      <Circle className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-gray-300" />
+                      <Circle className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-[var(--cct-text-disabled)]" />
                     )}
                     <div className="cct-min-w-0 cct-flex-1">
-                      <span className={cn('cct-text-sm', isSelected ? 'cct-font-medium cct-text-blue-700' : 'cct-text-gray-700')}>
+                      <span className={cn('cct-text-sm', isSelected ? 'cct-font-medium cct-text-[var(--cct-selected-text)]' : 'cct-text-[var(--cct-text-body)]')}>
                         {opt.label}
                       </span>
                       {opt.description && (
-                        <p className="cct-mt-0.5 cct-text-xs cct-text-gray-500">{opt.description}</p>
+                        <p className="cct-mt-0.5 cct-text-xs cct-text-[var(--cct-text-tertiary)]">{opt.description}</p>
                       )}
                     </div>
                   </div>
                 )
               })}
               {isOtherAnswer && (
-                <div className="cct-mt-2 cct-flex cct-items-start cct-gap-2 cct-rounded-md cct-border-t cct-border-gray-100 cct-bg-blue-50 cct-p-2 cct-pt-3">
-                  <Pencil className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-blue-500" />
+                <div className="cct-mt-2 cct-flex cct-items-start cct-gap-2 cct-rounded-md cct-border-t cct-border-[var(--cct-border-subtle)] cct-bg-[var(--cct-selected-bg)] cct-p-2 cct-pt-3">
+                  <Pencil className="cct-mt-0.5 cct-h-4 cct-w-4 cct-flex-shrink-0 cct-text-[var(--cct-selected-icon)]" />
                   <div className="cct-min-w-0 cct-flex-1">
-                    <span className="cct-text-xs cct-font-medium cct-text-gray-500">Other</span>
-                    <p className="cct-text-sm cct-font-medium cct-text-blue-700">{answer}</p>
+                    <span className="cct-text-xs cct-font-medium cct-text-[var(--cct-text-tertiary)]">Other</span>
+                    <p className="cct-text-sm cct-font-medium cct-text-[var(--cct-selected-text)]">{answer}</p>
                   </div>
                 </div>
               )}
               {!answer && (
-                <div className="cct-mt-2 cct-text-xs cct-italic cct-text-gray-400">Waiting for answer...</div>
+                <div className="cct-mt-2 cct-text-xs cct-italic cct-text-[var(--cct-text-muted)]">Waiting for answer...</div>
               )}
             </div>
           </div>
@@ -295,11 +304,11 @@ function PermalinkButton({ blockId }: { blockId: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="cct-rounded cct-p-1 cct-text-gray-400 cct-opacity-0 cct-transition-all hover:cct-bg-gray-100 hover:cct-text-gray-600 group-hover:cct-opacity-100"
+      className="cct-rounded cct-p-1 cct-text-[var(--cct-text-muted)] cct-opacity-0 cct-transition-all hover:cct-bg-[var(--cct-bg-code)] hover:cct-text-[var(--cct-text-secondary)] group-hover:cct-opacity-100"
       title="Copy link to this block"
     >
       {copied ? (
-        <Check className="cct-h-3.5 cct-w-3.5 cct-text-green-500" />
+        <Check className="cct-h-3.5 cct-w-3.5 cct-text-[var(--cct-success)]" />
       ) : (
         <Link2 className="cct-h-3.5 cct-w-3.5" />
       )}
@@ -309,7 +318,24 @@ function PermalinkButton({ blockId }: { blockId: string }) {
 
 // --- Markdown renderer helper ---
 
-function MarkdownContent({ text, proseClass }: { text: string; proseClass: string }) {
+function MarkdownContent({
+  text,
+  proseClass,
+  codeTheme,
+  codeCustomStyle,
+}: {
+  text: string
+  proseClass: string
+  codeTheme: Record<string, React.CSSProperties>
+  codeCustomStyle?: React.CSSProperties
+}) {
+  const defaultCodeStyle: React.CSSProperties = {
+    fontSize: '0.75rem',
+    borderRadius: '0.5rem',
+    margin: 0,
+    ...codeCustomStyle,
+  }
+
   return (
     <div className={proseClass}>
       <ReactMarkdown
@@ -322,8 +348,8 @@ function MarkdownContent({ text, proseClass }: { text: string; proseClass: strin
               return (
                 <SyntaxHighlighter
                   language={match[1]}
-                  style={oneLight}
-                  customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0 }}
+                  style={codeTheme}
+                  customStyle={defaultCodeStyle}
                 >
                   {code}
                 </SyntaxHighlighter>
@@ -345,6 +371,9 @@ function MarkdownContent({ text, proseClass }: { text: string; proseClass: strin
 
 function renderContent(
   block: DisplayBlock,
+  resolvedCodeTheme: Record<string, React.CSSProperties>,
+  codeCustomStyle: React.CSSProperties | undefined,
+  classNames: TranscriptClassNames | undefined,
   customBlockRenderers?: Record<string, (block: DisplayBlock) => React.ReactNode | null>,
 ) {
   // Check custom renderer by tool name (for tool_group blocks)
@@ -365,28 +394,42 @@ function renderContent(
 
   const content = block.content as Record<string, unknown>
 
+  const syntaxHighlighterStyle: React.CSSProperties = {
+    fontSize: '0.75rem',
+    borderRadius: '0.5rem',
+    margin: 0,
+    maxHeight: '300px',
+    overflow: 'auto',
+    ...codeCustomStyle,
+  }
+
+  const syntaxHighlighterStyleTall: React.CSSProperties = {
+    ...syntaxHighlighterStyle,
+    maxHeight: '400px',
+  }
+
   // Local command group
   if (block.blockType === 'local_command_group') {
     return (
       <div className="cct-space-y-3">
-        <div className="cct-text-sm cct-text-gray-500 cct-italic">Command executed</div>
+        <div className="cct-text-sm cct-text-[var(--cct-text-tertiary)] cct-italic">Command executed</div>
         {block.childBlocks && block.childBlocks.length > 0 && (
-          <div className="cct-space-y-2 cct-border-l-2 cct-border-gray-200 cct-pl-3">
+          <div className="cct-space-y-2 cct-border-l-2 cct-border-[var(--cct-border-default)] cct-pl-3">
             {block.childBlocks.map((child) => (
               <div key={child.id}>
-                <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-gray-400">{child.label.text}</div>
+                <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-[var(--cct-text-muted)]">{child.label.text}</div>
                 {child.blockType === 'local_command_output' ? (
-                  <pre className="cct-max-h-[200px] cct-overflow-auto cct-whitespace-pre-wrap cct-rounded-lg cct-bg-gray-50 cct-p-2 cct-font-mono cct-text-xs cct-text-gray-600">
+                  <pre className="cct-max-h-[200px] cct-overflow-auto cct-whitespace-pre-wrap cct-rounded-[var(--cct-border-radius-sm)] cct-bg-[var(--cct-bg-secondary)] cct-p-2 cct-font-mono cct-text-xs cct-text-[var(--cct-text-secondary)]">
                     {typeof child.content === 'string' ? extractCommandOutput(child.content) : ''}
                   </pre>
                 ) : child.blockType === 'compact_summary' ? (
-                  <div className="cct-max-h-[300px] cct-overflow-auto cct-rounded-lg cct-bg-amber-50 cct-p-3 cct-text-xs cct-text-gray-700">
+                  <div className="cct-max-h-[300px] cct-overflow-auto cct-rounded-[var(--cct-border-radius-sm)] cct-bg-[var(--cct-summary-bg)] cct-p-3 cct-text-xs cct-text-[var(--cct-text-body)]">
                     <pre className="cct-whitespace-pre-wrap cct-font-mono">
                       {typeof child.content === 'string' ? child.content : ''}
                     </pre>
                   </div>
                 ) : (
-                  <div className="cct-prose cct-prose-sm cct-max-w-none cct-text-gray-600">
+                  <div className={cn('cct-prose cct-prose-sm cct-max-w-none cct-text-[var(--cct-text-secondary)]', classNames?.markdown)}>
                     {typeof child.content === 'string' ? child.content : ''}
                   </div>
                 )}
@@ -439,22 +482,22 @@ function renderContent(
     return (
       <div className="cct-space-y-3">
         <div>
-          <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-gray-400">Input</div>
+          <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-[var(--cct-text-muted)]">Input</div>
           <SyntaxHighlighter
             language="json"
-            style={oneLight}
-            customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '300px', overflow: 'auto' }}
+            style={resolvedCodeTheme}
+            customStyle={syntaxHighlighterStyle}
           >
             {JSON.stringify(input, null, 2)}
           </SyntaxHighlighter>
         </div>
         {resultBlock && (
           <div>
-            <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-gray-400">Result</div>
+            <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-[var(--cct-text-muted)]">Result</div>
             <SyntaxHighlighter
               language="json"
-              style={oneLight}
-              customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '300px', overflow: 'auto' }}
+              style={resolvedCodeTheme}
+              customStyle={syntaxHighlighterStyle}
             >
               {displayResult}
             </SyntaxHighlighter>
@@ -491,26 +534,31 @@ function renderContent(
       <div className="cct-space-y-3">
         {resultData && (
           <div className="cct-flex cct-items-center cct-gap-2 cct-text-sm">
-            <Check className="cct-h-4 cct-w-4 cct-text-green-500" />
-            <span className="cct-text-gray-600">{resultData}</span>
+            <Check className="cct-h-4 cct-w-4 cct-text-[var(--cct-success)]" />
+            <span className="cct-text-[var(--cct-text-secondary)]">{resultData}</span>
           </div>
         )}
         {skillText && (
-          <div className="cct-border cct-border-gray-200 cct-rounded-lg cct-p-3 cct-bg-white">
-            <div className="cct-mb-2 cct-text-xs cct-font-medium cct-text-gray-400">Skill Content</div>
+          <div className="cct-border cct-border-[var(--cct-border-default)] cct-rounded-[var(--cct-border-radius-sm)] cct-p-3 cct-bg-[var(--cct-bg-primary)]">
+            <div className="cct-mb-2 cct-text-xs cct-font-medium cct-text-[var(--cct-text-muted)]">Skill Content</div>
             <MarkdownContent
               text={skillText}
-              proseClass="cct-prose cct-prose-sm cct-max-w-none prose-headings:cct-mt-3 prose-headings:cct-mb-2 prose-p:cct-my-1 prose-ul:cct-my-1 prose-ol:cct-my-1 prose-li:cct-my-0.5 prose-pre:cct-my-2"
+              proseClass={cn(
+                'cct-prose cct-prose-sm cct-max-w-none prose-headings:cct-mt-3 prose-headings:cct-mb-2 prose-p:cct-my-1 prose-ul:cct-my-1 prose-ol:cct-my-1 prose-li:cct-my-0.5 prose-pre:cct-my-2',
+                classNames?.markdown,
+              )}
+              codeTheme={resolvedCodeTheme}
+              codeCustomStyle={codeCustomStyle}
             />
           </div>
         )}
         {!skillText && (
           <div>
-            <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-gray-400">Input</div>
+            <div className="cct-mb-1 cct-text-xs cct-font-medium cct-text-[var(--cct-text-muted)]">Input</div>
             <SyntaxHighlighter
               language="json"
-              style={oneLight}
-              customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '200px', overflow: 'auto' }}
+              style={resolvedCodeTheme}
+              customStyle={{ ...syntaxHighlighterStyle, maxHeight: '200px' }}
             >
               {JSON.stringify(input, null, 2)}
             </SyntaxHighlighter>
@@ -522,17 +570,17 @@ function renderContent(
 
   // Local command input
   if (block.blockType === 'local_command') {
-    return <div className="cct-text-sm cct-text-gray-500 cct-italic">Command executed</div>
+    return <div className="cct-text-sm cct-text-[var(--cct-text-tertiary)] cct-italic">Command executed</div>
   }
 
   // Local command output
   if (block.blockType === 'local_command_output') {
     const output = typeof block.content === 'string' ? extractCommandOutput(block.content) : ''
     if (!output) {
-      return <div className="cct-text-sm cct-text-gray-400 cct-italic">(no output)</div>
+      return <div className="cct-text-sm cct-text-[var(--cct-text-muted)] cct-italic">(no output)</div>
     }
     return (
-      <pre className="cct-max-h-[300px] cct-overflow-auto cct-whitespace-pre-wrap cct-rounded-lg cct-bg-gray-50 cct-p-3 cct-font-mono cct-text-xs cct-text-gray-600">
+      <pre className="cct-max-h-[300px] cct-overflow-auto cct-whitespace-pre-wrap cct-rounded-[var(--cct-border-radius-sm)] cct-bg-[var(--cct-bg-secondary)] cct-p-3 cct-font-mono cct-text-xs cct-text-[var(--cct-text-secondary)]">
         {output}
       </pre>
     )
@@ -545,7 +593,12 @@ function renderContent(
       return (
         <MarkdownContent
           text={text}
-          proseClass="cct-prose cct-prose-sm cct-max-w-none cct-text-gray-700 prose-headings:cct-text-gray-900 prose-code:cct-rounded prose-code:cct-bg-gray-100 prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:cct-text-gray-800 prose-code:before:cct-content-none prose-code:after:cct-content-none prose-pre:cct-bg-gray-100 prose-pre:cct-text-gray-800"
+          proseClass={cn(
+            'cct-prose cct-prose-sm cct-max-w-none cct-text-[var(--cct-text-body)] prose-headings:cct-text-[var(--cct-text-primary)] prose-code:cct-rounded prose-code:cct-bg-[var(--cct-bg-code)] prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:cct-text-[var(--cct-text-primary)] prose-code:before:cct-content-none prose-code:after:cct-content-none prose-pre:cct-bg-[var(--cct-bg-code)] prose-pre:cct-text-[var(--cct-text-primary)]',
+            classNames?.markdown,
+          )}
+          codeTheme={resolvedCodeTheme}
+          codeCustomStyle={codeCustomStyle}
         />
       )
     }
@@ -557,7 +610,12 @@ function renderContent(
     return (
       <MarkdownContent
         text={thinking}
-        proseClass="cct-prose cct-prose-sm cct-max-w-none cct-text-purple-900 prose-headings:cct-text-purple-900 prose-code:cct-rounded prose-code:cct-bg-purple-100 prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:cct-text-purple-800 prose-code:before:cct-content-none prose-code:after:cct-content-none prose-pre:cct-bg-purple-50 prose-pre:cct-text-purple-900"
+        proseClass={cn(
+          'cct-prose cct-prose-sm cct-max-w-none cct-text-[var(--cct-thinking-text)] prose-headings:cct-text-[var(--cct-thinking-text)] prose-code:cct-rounded prose-code:cct-bg-[var(--cct-thinking-code-bg)] prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:cct-text-[var(--cct-thinking-code-text)] prose-code:before:cct-content-none prose-code:after:cct-content-none prose-pre:cct-bg-[var(--cct-thinking-pre-bg)] prose-pre:cct-text-[var(--cct-thinking-text)]',
+          classNames?.markdown,
+        )}
+        codeTheme={resolvedCodeTheme}
+        codeCustomStyle={codeCustomStyle}
       />
     )
   }
@@ -568,8 +626,8 @@ function renderContent(
     return (
       <SyntaxHighlighter
         language="json"
-        style={oneLight}
-        customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '400px', overflow: 'auto' }}
+        style={resolvedCodeTheme}
+        customStyle={syntaxHighlighterStyleTall}
       >
         {JSON.stringify(input, null, 2)}
       </SyntaxHighlighter>
@@ -596,8 +654,8 @@ function renderContent(
     return (
       <SyntaxHighlighter
         language="json"
-        style={oneLight}
-        customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '400px', overflow: 'auto' }}
+        style={resolvedCodeTheme}
+        customStyle={syntaxHighlighterStyleTall}
       >
         {displayContent}
       </SyntaxHighlighter>
@@ -611,8 +669,8 @@ function renderContent(
     return (
       <SyntaxHighlighter
         language="json"
-        style={oneLight}
-        customStyle={{ fontSize: '0.75rem', borderRadius: '0.5rem', margin: 0, maxHeight: '400px', overflow: 'auto' }}
+        style={resolvedCodeTheme}
+        customStyle={syntaxHighlighterStyleTall}
       >
         {JSON.stringify(input, null, 2)}
       </SyntaxHighlighter>
@@ -621,7 +679,7 @@ function renderContent(
 
   // Fallback: show as JSON
   return (
-    <pre className="cct-max-h-[300px] cct-overflow-auto cct-whitespace-pre-wrap cct-text-xs cct-text-gray-600">
+    <pre className="cct-max-h-[300px] cct-overflow-auto cct-whitespace-pre-wrap cct-text-xs cct-text-[var(--cct-text-secondary)]">
       {JSON.stringify(content, null, 2)}
     </pre>
   )
@@ -629,30 +687,37 @@ function renderContent(
 
 // --- Main component ---
 
-export function ContentBlockCard({ block, customBlockRenderers }: ContentBlockCardProps) {
+export function ContentBlockCard({ block, colorScheme, classNames, theme, customBlockRenderers }: ContentBlockCardProps) {
   const isSecondary = isSecondaryBlock(block)
   const [expanded, setExpanded] = useState(() => shouldExpandByDefault(block))
   const styles = getBlockContainerStyle(block)
 
+  const resolvedCodeTheme = useMemo(() => {
+    if (theme?.codeTheme) return theme.codeTheme
+    return colorScheme === 'dark' ? oneDark : oneLight
+  }, [theme?.codeTheme, colorScheme])
+
+  const codeCustomStyle = theme?.codeCustomStyle
+
   // Primary blocks (User/Assistant) don't have collapse functionality
   if (!isSecondary) {
     return (
-      <div className={styles.wrapper}>
-        <div className={cn('cct-group cct-overflow-hidden cct-rounded-xl', styles.container)}>
-          <div className={cn('cct-flex cct-items-center cct-justify-between', styles.header)}>
+      <div className={cn(styles.wrapper, classNames?.blockWrapper)}>
+        <div className={cn('cct-group cct-overflow-hidden cct-rounded-[var(--cct-border-radius)]', styles.container, classNames?.primaryBlock)}>
+          <div className={cn('cct-flex cct-items-center cct-justify-between', styles.header, classNames?.primaryHeader)}>
             <div className="cct-flex cct-items-center cct-gap-2">
-              <span className={cn('cct-flex cct-h-6 cct-w-6 cct-items-center cct-justify-center cct-rounded-full', getIconStyle(block))}>
+              <span className={cn('cct-flex cct-h-6 cct-w-6 cct-items-center cct-justify-center cct-rounded-full', getIconStyle(block), classNames?.icon)}>
                 {getIcon(block)}
               </span>
-              <span className="cct-font-medium cct-text-gray-900">{block.label.text}</span>
+              <span className={cn('cct-font-medium cct-text-[var(--cct-text-primary)]', classNames?.label)}>{block.label.text}</span>
             </div>
-            <div className="cct-flex cct-items-center cct-gap-2 cct-text-sm cct-text-gray-500">
+            <div className={cn('cct-flex cct-items-center cct-gap-2 cct-text-sm cct-text-[var(--cct-text-tertiary)]', classNames?.timestamp)}>
               <span>{format(new Date(block.timestamp), 'HH:mm:ss')}</span>
               <PermalinkButton blockId={block.id} />
             </div>
           </div>
-          <div className="cct-border-t cct-border-gray-100 cct-px-4 cct-py-3">
-            {renderContent(block, customBlockRenderers)}
+          <div className={cn('cct-border-t cct-border-[var(--cct-border-subtle)] cct-px-4 cct-py-3', classNames?.primaryContent)}>
+            {renderContent(block, resolvedCodeTheme, codeCustomStyle, classNames, customBlockRenderers)}
           </div>
         </div>
       </div>
@@ -661,29 +726,29 @@ export function ContentBlockCard({ block, customBlockRenderers }: ContentBlockCa
 
   // Secondary blocks have collapse functionality
   return (
-    <div className={styles.wrapper}>
-      <div className={cn('cct-group cct-overflow-hidden cct-rounded-xl', styles.container)}>
-        <div className={cn('cct-flex cct-w-full cct-items-center cct-justify-between', styles.header)}>
+    <div className={cn(styles.wrapper, classNames?.blockWrapper)}>
+      <div className={cn('cct-group cct-overflow-hidden cct-rounded-[var(--cct-border-radius)]', styles.container, classNames?.secondaryBlock)}>
+        <div className={cn('cct-flex cct-w-full cct-items-center cct-justify-between', styles.header, classNames?.secondaryHeader)}>
           <button
-            className="cct-flex cct-flex-1 cct-items-center cct-gap-2 cct-text-left cct-transition-colors hover:cct-bg-gray-50/50"
+            className="cct-flex cct-flex-1 cct-items-center cct-gap-2 cct-text-left cct-transition-colors hover:cct-bg-[var(--cct-bg-secondary)]"
             onClick={() => setExpanded(!expanded)}
           >
-            <span className={cn('cct-flex cct-h-5 cct-w-5 cct-items-center cct-justify-center cct-rounded-full', getIconStyle(block))}>
+            <span className={cn('cct-flex cct-h-5 cct-w-5 cct-items-center cct-justify-center cct-rounded-full', getIconStyle(block), classNames?.icon)}>
               {getIcon(block)}
             </span>
-            <span className="cct-text-sm cct-font-medium cct-text-gray-600">{block.label.text}</span>
+            <span className={cn('cct-text-sm cct-font-medium cct-text-[var(--cct-text-secondary)]', classNames?.label)}>{block.label.text}</span>
             {block.label.params && (
-              <code className="cct-rounded cct-bg-gray-100 cct-px-1 cct-py-0.5 cct-text-xs cct-font-normal cct-text-gray-700">
+              <code className="cct-rounded cct-bg-[var(--cct-bg-code)] cct-px-1 cct-py-0.5 cct-text-xs cct-font-normal cct-text-[var(--cct-text-body)]">
                 {block.label.params}
               </code>
             )}
           </button>
-          <div className="cct-flex cct-items-center cct-gap-2 cct-text-xs cct-text-gray-500">
+          <div className={cn('cct-flex cct-items-center cct-gap-2 cct-text-xs cct-text-[var(--cct-text-tertiary)]', classNames?.timestamp)}>
             <span>{format(new Date(block.timestamp), 'HH:mm:ss')}</span>
             <PermalinkButton blockId={block.id} />
             <button
               onClick={() => setExpanded(!expanded)}
-              className="cct-p-0.5 hover:cct-bg-gray-100 cct-rounded"
+              className="cct-p-0.5 hover:cct-bg-[var(--cct-bg-code)] cct-rounded"
             >
               {expanded ? (
                 <ChevronDown className="cct-h-3 cct-w-3" />
@@ -695,8 +760,8 @@ export function ContentBlockCard({ block, customBlockRenderers }: ContentBlockCa
         </div>
 
         {expanded && (
-          <div className="cct-border-t cct-border-gray-100 cct-px-3 cct-py-2">
-            {renderContent(block, customBlockRenderers)}
+          <div className={cn('cct-border-t cct-border-[var(--cct-border-subtle)] cct-px-3 cct-py-2', classNames?.secondaryContent)}>
+            {renderContent(block, resolvedCodeTheme, codeCustomStyle, classNames, customBlockRenderers)}
           </div>
         )}
       </div>

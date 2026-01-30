@@ -1,3 +1,126 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* === Light theme (default) === */
+[data-cct-root],
+[data-cct-root][data-cct-theme="light"] {
+  /* User */
+  --cct-user-border: #bfdbfe;       /* blue-200 */
+  --cct-user-bg: #ffffff;
+  --cct-user-icon-bg: #dbeafe;      /* blue-100 */
+  --cct-user-icon-text: #2563eb;    /* blue-600 */
+
+  /* Assistant */
+  --cct-assistant-border: #bbf7d0;  /* green-200 */
+  --cct-assistant-bg: #ffffff;
+  --cct-assistant-icon-bg: #dcfce7; /* green-100 */
+  --cct-assistant-icon-text: #16a34a; /* green-600 */
+
+  /* Thinking */
+  --cct-thinking-text: #581c87;     /* purple-900 */
+  --cct-thinking-code-bg: #f3e8ff;  /* purple-100 */
+  --cct-thinking-code-text: #6b21a8; /* purple-800 */
+  --cct-thinking-pre-bg: #faf5ff;   /* purple-50 */
+
+  /* Text hierarchy */
+  --cct-text-primary: #111827;      /* gray-900 */
+  --cct-text-body: #374151;         /* gray-700 */
+  --cct-text-secondary: #4b5563;    /* gray-600 */
+  --cct-text-tertiary: #6b7280;     /* gray-500 */
+  --cct-text-muted: #9ca3af;        /* gray-400 */
+  --cct-text-disabled: #d1d5db;     /* gray-300 */
+
+  /* Backgrounds */
+  --cct-bg-primary: #ffffff;
+  --cct-bg-secondary: #f9fafb;      /* gray-50 */
+  --cct-bg-code: #f3f4f6;           /* gray-100 */
+
+  /* Borders */
+  --cct-border-default: #e5e7eb;    /* gray-200 */
+  --cct-border-subtle: #f3f4f6;     /* gray-100 */
+
+  /* Secondary block */
+  --cct-secondary-icon-bg: #e5e7eb; /* gray-200 */
+
+  /* Structure */
+  --cct-border-radius: 0.75rem;
+  --cct-border-radius-sm: 0.5rem;
+
+  /* Todo status */
+  --cct-todo-completed: #22c55e;    /* green-500 */
+  --cct-todo-in-progress: #3b82f6;  /* blue-500 */
+  --cct-todo-pending: #9ca3af;      /* gray-400 */
+
+  /* Selection highlight */
+  --cct-selected-bg: #eff6ff;       /* blue-50 */
+  --cct-selected-text: #1d4ed8;     /* blue-700 */
+  --cct-selected-icon: #3b82f6;     /* blue-500 */
+
+  /* Success / status */
+  --cct-success: #22c55e;           /* green-500 */
+
+  /* Summary */
+  --cct-summary-bg: #fffbeb;        /* amber-50 */
+}
+
+/* === Dark theme === */
+[data-cct-root][data-cct-theme="dark"] {
+  /* User */
+  --cct-user-border: #1e3a5f;
+  --cct-user-bg: #1f2937;           /* gray-800 */
+  --cct-user-icon-bg: #1e3a8a;      /* blue-900 */
+  --cct-user-icon-text: #93c5fd;    /* blue-300 */
+
+  /* Assistant */
+  --cct-assistant-border: #14532d;
+  --cct-assistant-bg: #1f2937;      /* gray-800 */
+  --cct-assistant-icon-bg: #14532d; /* green-900 */
+  --cct-assistant-icon-text: #86efac; /* green-300 */
+
+  /* Thinking */
+  --cct-thinking-text: #e9d5ff;     /* purple-200 */
+  --cct-thinking-code-bg: #3b0764;  /* purple-950 */
+  --cct-thinking-code-text: #d8b4fe; /* purple-300 */
+  --cct-thinking-pre-bg: #2e1065;
+
+  /* Text hierarchy */
+  --cct-text-primary: #f9fafb;      /* gray-50 */
+  --cct-text-body: #d1d5db;         /* gray-300 */
+  --cct-text-secondary: #d1d5db;    /* gray-300 */
+  --cct-text-tertiary: #9ca3af;     /* gray-400 */
+  --cct-text-muted: #6b7280;        /* gray-500 */
+  --cct-text-disabled: #4b5563;     /* gray-600 */
+
+  /* Backgrounds */
+  --cct-bg-primary: #1f2937;        /* gray-800 */
+  --cct-bg-secondary: #111827;      /* gray-900 */
+  --cct-bg-code: #374151;           /* gray-700 */
+
+  /* Borders */
+  --cct-border-default: #374151;    /* gray-700 */
+  --cct-border-subtle: #1f2937;     /* gray-800 */
+
+  /* Secondary block */
+  --cct-secondary-icon-bg: #374151; /* gray-700 */
+
+  /* Structure */
+  --cct-border-radius: 0.75rem;
+  --cct-border-radius-sm: 0.5rem;
+
+  /* Todo status */
+  --cct-todo-completed: #4ade80;    /* green-400 */
+  --cct-todo-in-progress: #60a5fa;  /* blue-400 */
+  --cct-todo-pending: #6b7280;      /* gray-500 */
+
+  /* Selection highlight */
+  --cct-selected-bg: #1e3a8a;       /* blue-900 */
+  --cct-selected-text: #93c5fd;     /* blue-300 */
+  --cct-selected-icon: #60a5fa;     /* blue-400 */
+
+  /* Success / status */
+  --cct-success: #4ade80;           /* green-400 */
+
+  /* Summary */
+  --cct-summary-bg: #451a03;        /* amber-950 */
+}
