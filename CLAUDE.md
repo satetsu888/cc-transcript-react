@@ -51,6 +51,46 @@ Raw `TranscriptEvent[]` flows through three stages:
 - **`components/block-styles.ts`** — Container styles, icon selection, prose class constants.
 - **`components/block-classification.ts`** — Block type classification (isSecondaryBlock, shouldExpandByDefault).
 
+### Code Placement Rules
+
+#### core/ vs react/ の判断基準
+
+- **`core/` に置くもの**: React や DOM に依存しないコード。型定義、データ変換ロジック、文字列操作ユーティリティなど。`import React` や JSX を含んではいけない。
+- **`react/` に置くもの**: React コンポーネント、hooks、React Context、CSS、Tailwind クラス文字列など。
+
+**依存方向**: `react/` → `core/` は OK。`core/` → `react/` は禁止。`core/` 内のファイルは `react/` の存在を知らない。
+
+#### react/ 内の配置
+
+| 置き場所 | 何を置くか |
+|----------|-----------|
+| `react/types.ts` | React に依存する型 (`React.CSSProperties` を使う型など) |
+| `react/context.ts` | TranscriptContext の定義。新しいコンテキスト値を追加する場合はここ |
+| `react/ClaudeCodeTranscript.tsx` | 公開 props の定義、Provider のセットアップ |
+| `react/components/block-classification.ts` | blockType の分類判定 (pure 関数、React 不要) |
+| `react/components/block-styles.ts` | Tailwind クラス文字列定数、アイコン選択、コンテナスタイル |
+| `react/components/*.tsx` | 複数のレンダラーから共有されるコンポーネント (CodeBlock, MarkdownContent 等) |
+| `react/components/renderers/*.tsx` | 特定 blockType のレンダリングロジック。そのブロック固有のデータ抽出ヘルパーもここ |
+
+#### 新しい blockType を追加する手順
+
+1. `core/expand-events.ts` で新しい blockType を持つ `DisplayBlock` を生成するロジックを追加
+2. `react/components/renderers/` に `XxxRenderer.tsx` を作成
+3. `react/components/renderers/index.tsx` の `DEFAULT_RENDERERS` に登録
+4. (必要なら) `block-classification.ts` の `SECONDARY_BLOCK_TYPES` に追加
+
+#### 新しい CSS 変数 (テーマトークン) を追加する手順
+
+1. `react/styles.css` の light テーマ・dark テーマ両方に `--cct-xxx` を追加
+2. コンポーネントでは `cct-text-[var(--cct-xxx)]` のように Tailwind の arbitrary value で参照
+
+#### コンテキスト経由で値を共有する場合
+
+新しい設定値をレンダラーに渡す場合:
+1. `react/context.ts` の `TranscriptContextValue` にフィールドを追加
+2. `react/ClaudeCodeTranscript.tsx` の props と `contextValue` の組み立てに追加
+3. レンダラーでは `useTranscriptContext()` で取得
+
 ### Key Design Decisions
 
 - **Tailwind prefix `cct-`**: All Tailwind classes use this prefix to avoid conflicts when the component is embedded in host applications. Preflight is disabled for the same reason. The `cn()` utility in `react/cn.ts` handles merging with this prefix.
