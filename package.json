@@ -2,6 +2,20 @@
   "name": "cc-transcript-react",
   "version": "0.1.0",
   "description": "React component for displaying Claude Code transcripts",
+  "license": "MIT",
+  "author": "satetsu888",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/satetsu888/cc-transcript-react.git"
+  },
+  "homepage": "https://github.com/satetsu888/cc-transcript-react",
+  "keywords": [
+    "react",
+    "claude",
+    "claude-code",
+    "transcript",
+    "component"
+  ],
   "type": "module",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
