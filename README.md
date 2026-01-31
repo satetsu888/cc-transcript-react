@@ -2,15 +2,15 @@
 
 React component library for displaying [Claude Code](https://claude.ai/code) transcripts.
 
-## Quick Start: Viewer
+[Live Demo (Storybook)](https://satetsu888.github.io/cc-transcript-react/)
 
-View your Claude Code session logs in the browser:
+**See how it renders your own sessions — no setup needed:**
 
 ```bash
 npx cc-transcript-react
 ```
 
-This starts a local server at `http://localhost:3333` showing all your Claude Code sessions. Click a session to view its full transcript.
+Opens `http://localhost:3333` with all your Claude Code sessions. Click one to view its full transcript.
 
 ```bash
 # View a specific session
