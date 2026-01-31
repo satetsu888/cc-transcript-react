@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Scoped box-sizing reset.
+   Since preflight is disabled to avoid affecting host applications,
+   we apply border-box only within our component tree. */
+[data-cct-root] *,
+[data-cct-root] *::before,
+[data-cct-root] *::after {
+  box-sizing: border-box;
+}
+
 /* === Light theme (default) === */
 [data-cct-root],
 [data-cct-root][data-cct-theme="light"] {
