@@ -10,6 +10,8 @@ React component library for displaying Claude Code transcripts. Packaged as an E
 
 - `npm run build` — Build with tsup (outputs dist/index.js, dist/headless.js, dist/index.d.ts, dist/index.css)
 - `npm run dev` — Watch mode build
+- `npm run storybook` — Start Storybook dev server on port 6006
+- `npm run build-storybook` — Build static Storybook to `storybook-static/`
 
 No test runner or linter is configured.
 
@@ -91,10 +93,19 @@ Raw `TranscriptEvent[]` flows through three stages:
 2. `react/ClaudeCodeTranscript.tsx` の props と `contextValue` の組み立てに追加
 3. レンダラーでは `useTranscriptContext()` で取得
 
+### Storybook
+
+- **Config**: `.storybook/main.ts` (React + Vite framework), `.storybook/preview.ts` (CSS import, backgrounds)
+- **Stories**: `src/stories/ClaudeCodeTranscript.stories.tsx` — FullConversation, WithThinking, WithToolGroup, WithTodoList, WithAskUserQuestion, WithSkillGroup, WithLocalCommand, WithCustomRenderer, Empty
+- **Fixtures**: `src/stories/fixtures/sample-events.ts` — Sample `TranscriptEvent[]` data covering all renderer types
+- **Deployment**: `.github/workflows/deploy-storybook.yml` — GitHub Actions workflow deploys to GitHub Pages on push to main. Requires repository Settings → Pages → Source を "GitHub Actions" に設定する。
+
 ### Key Design Decisions
 
 - **Tailwind prefix `cct-`**: All Tailwind classes use this prefix to avoid conflicts when the component is embedded in host applications. Preflight is disabled for the same reason. The `cn()` utility in `react/cn.ts` handles merging with this prefix.
 - **CSS custom properties**: All colors use `--cct-*` variables defined in `react/styles.css`, with light/dark theme variants via `[data-cct-theme]` attribute.
+- **Scoped box-sizing reset**: `styles.css` に `[data-cct-root] * { box-sizing: border-box; }` を定義している。Preflight が無効なため、ブラウザデフォルトの `content-box` だと `width: 100%` + `padding` で親要素をはみ出す問題が発生する。このスコープ付きリセットでホストアプリに影響を与えずに解決している。
+- **Button element resets**: Preflight 無効のため `<button>` にブラウザデフォルトの背景・ボーダーが残る。ボタン要素には `cct-appearance-none cct-border-0 cct-bg-transparent` を明示的に付与すること。
 - **TranscriptContext**: Theme settings (codeTheme, classNames, customBlockRenderers) are provided via React Context to avoid prop drilling through renderers.
 - **Renderer registry**: blockType → component mapping in `renderers/index.tsx`. Adding a new block type = new renderer file + one line in the registry.
 - **Custom block renderers**: Consumers can override rendering for specific tools or block types via `customBlockRenderers` prop.
