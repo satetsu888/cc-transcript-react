@@ -11,9 +11,9 @@ const PROSE_BASE = 'cct-prose cct-prose-sm cct-max-w-none'
 
 const PROSE_CODE_RESET = 'prose-code:cct-rounded prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:before:cct-content-none prose-code:after:cct-content-none'
 
-export const PROSE_TEXT = `${PROSE_BASE} cct-text-[var(--cct-text-body)] prose-headings:cct-text-[var(--cct-text-primary)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-bg-code)] prose-code:cct-text-[var(--cct-text-primary)] prose-pre:cct-bg-[var(--cct-bg-code)] prose-pre:cct-text-[var(--cct-text-primary)]`
+export const PROSE_TEXT = `${PROSE_BASE} cct-text-[var(--cct-text-body)] prose-headings:cct-text-[var(--cct-text-primary)] prose-strong:cct-text-[var(--cct-text-primary)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-bg-code)] prose-code:cct-text-[var(--cct-text-primary)] prose-pre:cct-bg-[var(--cct-bg-code)] prose-pre:cct-text-[var(--cct-text-primary)]`
 
-export const PROSE_THINKING = `${PROSE_BASE} cct-text-[var(--cct-thinking-text)] prose-headings:cct-text-[var(--cct-thinking-text)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-thinking-code-bg)] prose-code:cct-text-[var(--cct-thinking-code-text)] prose-pre:cct-bg-[var(--cct-thinking-pre-bg)] prose-pre:cct-text-[var(--cct-thinking-text)]`
+export const PROSE_THINKING = `${PROSE_BASE} cct-text-[var(--cct-thinking-text)] prose-headings:cct-text-[var(--cct-thinking-text)] prose-strong:cct-text-[var(--cct-thinking-text)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-thinking-code-bg)] prose-code:cct-text-[var(--cct-thinking-code-text)] prose-pre:cct-bg-[var(--cct-thinking-pre-bg)] prose-pre:cct-text-[var(--cct-thinking-text)]`
 
 export const PROSE_SKILL = `${PROSE_BASE} prose-headings:cct-mt-3 prose-headings:cct-mb-2 prose-p:cct-my-1 prose-ul:cct-my-1 prose-ol:cct-my-1 prose-li:cct-my-0.5 prose-pre:cct-my-2`
 

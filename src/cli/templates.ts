@@ -53,7 +53,7 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
 }
 
 export function sessionPage(sessionId: string, colorScheme: 'light' | 'dark'): string {
-  const bg = colorScheme === 'dark' ? '#1a1a1a' : '#f5f5f5'
+  const isDark = colorScheme === 'dark'
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,9 +63,9 @@ export function sessionPage(sessionId: string, colorScheme: 'light' | 'dark'): s
   <link rel="stylesheet" href="/assets/styles.css">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 2rem; background: ${bg}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    .back { display: inline-block; margin-bottom: 1rem; color: #666; text-decoration: none; font-size: 0.9rem; }
-    .back:hover { color: #333; }
+    body { margin: 0; padding: 2rem; background: ${isDark ? '#1a1a1a' : '#f5f5f5'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .back { display: inline-block; margin-bottom: 1rem; color: ${isDark ? '#999' : '#666'}; text-decoration: none; font-size: 0.9rem; }
+    .back:hover { color: ${isDark ? '#ccc' : '#333'}; }
   </style>
 </head>
 <body>
