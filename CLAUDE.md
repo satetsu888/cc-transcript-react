@@ -119,3 +119,16 @@ Exports: `ClaudeCodeTranscript` component, processing utilities (`filterHiddenEv
 ### Headless API (src/headless.ts)
 
 Exports: processing utilities and types only. No React dependency. Useful for React Native, Node.js scripts, or custom renderers.
+
+## Release
+
+npm パッケージのリリースは GitHub Release をトリガーに GitHub Actions (OIDC Trusted Publishing) で自動実行される。
+
+### リリース手順
+
+1. `package.json` の `version` を更新してコミット・マージ
+2. GitHub で Release を作成:
+   - Tag: `v<version>`（例: `v0.2.0`）を新規作成
+   - Title: `v<version>`
+   - "Generate release notes" で変更内容を自動生成
+3. Release を publish すると `.github/workflows/release.yml` が `npm publish --provenance --access public` を実行
