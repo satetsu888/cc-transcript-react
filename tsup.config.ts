@@ -7,7 +7,7 @@ export default defineConfig([
     format: ['esm'],
     dts: true,
     clean: true,
-    sourcemap: true,
+    sourcemap: false,
     external: ['react', 'react-dom'],
   },
   // Viewer (IIFE, self-contained with React bundled)
@@ -16,6 +16,7 @@ export default defineConfig([
     format: ['iife'],
     clean: false,
     sourcemap: false,
+    minify: true,
     noExternal: [/.*/],
     splitting: false,
     platform: 'browser',
