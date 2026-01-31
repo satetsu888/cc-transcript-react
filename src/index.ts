@@ -1,17 +1,19 @@
-import './styles.css'
+import './react/styles.css'
 
-export { ClaudeCodeTranscript } from './ClaudeCodeTranscript'
-export type { ClaudeCodeTranscriptProps } from './ClaudeCodeTranscript'
+export { ClaudeCodeTranscript } from './react/ClaudeCodeTranscript'
+export type { ClaudeCodeTranscriptProps } from './react/ClaudeCodeTranscript'
 
 export type {
   TranscriptEvent,
   DisplayBlock,
   BlockLabel,
+} from './core/types'
+export type {
   ColorScheme,
   TranscriptClassNames,
   TranscriptTheme,
-} from './types'
-export type { MessageBlockInfo } from './expand-events'
+} from './react/types'
+export type { MessageBlockInfo } from './core/expand-events'
 
-export { filterHiddenEvents } from './filter-events'
-export { expandEvents, extractMessageBlocks } from './expand-events'
+export { filterHiddenEvents } from './core/filter-events'
+export { expandEvents, extractMessageBlocks } from './core/expand-events'
