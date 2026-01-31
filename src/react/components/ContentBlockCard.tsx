@@ -48,7 +48,7 @@ export function ContentBlockCard({ block }: ContentBlockCardProps) {
       <div className={cn('cct-group cct-overflow-hidden cct-rounded-[var(--cct-border-radius)]', styles.container, classNames?.secondaryBlock)}>
         <div className={cn('cct-flex cct-w-full cct-items-center cct-justify-between', styles.header, classNames?.secondaryHeader)}>
           <button
-            className="cct-flex cct-flex-1 cct-items-center cct-gap-2 cct-text-left cct-transition-colors hover:cct-bg-[var(--cct-bg-secondary)]"
+            className="cct-appearance-none cct-border-0 cct-bg-transparent cct-flex cct-flex-1 cct-items-center cct-gap-2 cct-text-left cct-transition-colors hover:cct-bg-[var(--cct-bg-secondary)]"
             onClick={() => setExpanded(!expanded)}
           >
             <span className={cn('cct-flex cct-h-5 cct-w-5 cct-items-center cct-justify-center cct-rounded-full', getIconStyle(block), classNames?.icon)}>
@@ -66,7 +66,7 @@ export function ContentBlockCard({ block }: ContentBlockCardProps) {
             <PermalinkButton blockId={block.id} />
             <button
               onClick={() => setExpanded(!expanded)}
-              className="cct-p-0.5 hover:cct-bg-[var(--cct-bg-code)] cct-rounded"
+              className="cct-appearance-none cct-border-0 cct-bg-transparent cct-p-0.5 hover:cct-bg-[var(--cct-bg-code)] cct-rounded"
             >
               {expanded ? (
                 <ChevronDown className="cct-h-3 cct-w-3" />

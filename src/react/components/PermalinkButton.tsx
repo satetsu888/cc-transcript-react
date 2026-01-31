@@ -26,7 +26,7 @@ export function PermalinkButton({ blockId }: { blockId: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="cct-rounded cct-p-1 cct-text-[var(--cct-text-muted)] cct-opacity-0 cct-transition-all hover:cct-bg-[var(--cct-bg-code)] hover:cct-text-[var(--cct-text-secondary)] group-hover:cct-opacity-100"
+      className="cct-appearance-none cct-border-0 cct-bg-transparent cct-rounded cct-p-1 cct-text-[var(--cct-text-muted)] cct-opacity-0 cct-transition-all hover:cct-bg-[var(--cct-bg-code)] hover:cct-text-[var(--cct-text-secondary)] group-hover:cct-opacity-100"
       title="Copy link to this block"
     >
       {copied ? (
