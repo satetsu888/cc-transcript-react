@@ -25,13 +25,13 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
   <title>Claude Code Sessions</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDark ? '#1a1a1a' : '#f5f5f5'}; color: ${isDark ? '#e0e0e0' : '#333'}; padding: 2rem; }
-    h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: ${isDark ? '#f0f0f0' : '#1a1a1a'}; }
-    table { width: 100%; border-collapse: collapse; background: ${isDark ? '#2a2a2a' : '#fff'}; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,${isDark ? '0.4' : '0.1'}); }
-    th { text-align: left; padding: 0.75rem 1rem; background: ${isDark ? '#333' : '#f8f8f8'}; border-bottom: 2px solid ${isDark ? '#444' : '#e5e5e5'}; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: ${isDark ? '#999' : '#666'}; }
-    td { padding: 0.75rem 1rem; border-bottom: 1px solid ${isDark ? '#383838' : '#eee'}; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    tr:hover td { background: ${isDark ? '#333' : '#f0f7ff'}; }
-    .empty { padding: 3rem; text-align: center; color: #999; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDark ? '#111827' : '#f5f5f5'}; color: ${isDark ? '#d1d5db' : '#374151'}; padding: 2rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: ${isDark ? '#f9fafb' : '#111827'}; }
+    table { width: 100%; border-collapse: collapse; background: ${isDark ? '#1f2937' : '#fff'}; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,${isDark ? '0.4' : '0.1'}); }
+    th { text-align: left; padding: 0.75rem 1rem; background: ${isDark ? '#111827' : '#f9fafb'}; border-bottom: 2px solid ${isDark ? '#374151' : '#e5e7eb'}; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: ${isDark ? '#9ca3af' : '#6b7280'}; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid ${isDark ? '#374151' : '#e5e7eb'}; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    tr:hover td { background: ${isDark ? '#1e3a8a20' : '#eff6ff'}; }
+    .empty { padding: 3rem; text-align: center; color: ${isDark ? '#6b7280' : '#9ca3af'}; }
   </style>
 </head>
 <body>
@@ -63,9 +63,9 @@ export function sessionPage(sessionId: string, colorScheme: 'light' | 'dark'): s
   <link rel="stylesheet" href="/assets/styles.css">
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; padding: 2rem; background: ${isDark ? '#1a1a1a' : '#f5f5f5'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    .back { display: inline-block; margin-bottom: 1rem; color: ${isDark ? '#999' : '#666'}; text-decoration: none; font-size: 0.9rem; }
-    .back:hover { color: ${isDark ? '#ccc' : '#333'}; }
+    body { margin: 0; padding: 2rem; background: ${isDark ? '#111827' : '#f5f5f5'}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .back { display: inline-block; margin-bottom: 1rem; color: ${isDark ? '#9ca3af' : '#6b7280'}; text-decoration: none; font-size: 0.9rem; }
+    .back:hover { color: ${isDark ? '#d1d5db' : '#374151'}; }
   </style>
 </head>
 <body>
