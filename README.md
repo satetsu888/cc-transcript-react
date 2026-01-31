@@ -1,5 +1,7 @@
 # cc-transcript-react
 
+[![npm version](https://img.shields.io/npm/v/cc-transcript-react)](https://www.npmjs.com/package/cc-transcript-react)
+
 React component library for displaying [Claude Code](https://claude.ai/code) transcripts.
 
 [Live Demo (Storybook)](https://satetsu888.github.io/cc-transcript-react/)
@@ -100,3 +102,7 @@ No React or DOM dependency.
 ## License
 
 MIT
+
+---
+
+<sub>If you find this useful, consider [buying me a coffee](https://buymeacoffee.com/satetsu888).</sub>
