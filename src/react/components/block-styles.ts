@@ -11,9 +11,21 @@ const PROSE_BASE = 'cct-prose cct-prose-sm cct-max-w-none'
 
 const PROSE_CODE_RESET = 'prose-code:cct-rounded prose-code:cct-px-1 prose-code:cct-py-0.5 prose-code:before:cct-content-none prose-code:after:cct-content-none'
 
-export const PROSE_TEXT = `${PROSE_BASE} cct-text-[var(--cct-text-body)] prose-headings:cct-text-[var(--cct-text-primary)] prose-strong:cct-text-[var(--cct-text-primary)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-bg-code)] prose-code:cct-text-[var(--cct-text-primary)] prose-pre:cct-bg-[var(--cct-bg-code)] prose-pre:cct-text-[var(--cct-text-primary)]`
+// Overrides for all --tw-prose-* color variables so the component works in both
+// light and dark mode without needing prose-invert.
+const PROSE_COLOR_OVERRIDES = [
+  'prose-strong:cct-text-[var(--cct-text-primary)]',
+  'prose-a:cct-text-[var(--cct-text-primary)] prose-a:cct-underline',
+  'prose-blockquote:cct-text-[var(--cct-text-secondary)] prose-blockquote:cct-border-[var(--cct-border-default)]',
+  'prose-hr:cct-border-[var(--cct-border-default)]',
+  'prose-th:cct-border-[var(--cct-border-default)] prose-td:cct-border-[var(--cct-border-default)]',
+  'prose-figcaption:cct-text-[var(--cct-text-tertiary)]',
+  'prose-kbd:cct-text-[var(--cct-text-primary)]',
+].join(' ')
 
-export const PROSE_THINKING = `${PROSE_BASE} cct-text-[var(--cct-thinking-text)] prose-headings:cct-text-[var(--cct-thinking-text)] prose-strong:cct-text-[var(--cct-thinking-text)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-thinking-code-bg)] prose-code:cct-text-[var(--cct-thinking-code-text)] prose-pre:cct-bg-[var(--cct-thinking-pre-bg)] prose-pre:cct-text-[var(--cct-thinking-text)]`
+export const PROSE_TEXT = `${PROSE_BASE} cct-text-[var(--cct-text-body)] prose-headings:cct-text-[var(--cct-text-primary)] ${PROSE_COLOR_OVERRIDES} ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-bg-code)] prose-code:cct-text-[var(--cct-text-primary)] prose-pre:cct-bg-[var(--cct-bg-code)] prose-pre:cct-text-[var(--cct-text-primary)]`
+
+export const PROSE_THINKING = `${PROSE_BASE} cct-text-[var(--cct-thinking-text)] prose-headings:cct-text-[var(--cct-thinking-text)] prose-strong:cct-text-[var(--cct-thinking-text)] prose-a:cct-text-[var(--cct-thinking-text)] prose-a:cct-underline prose-blockquote:cct-text-[var(--cct-thinking-text)] prose-blockquote:cct-border-[var(--cct-thinking-code-bg)] prose-hr:cct-border-[var(--cct-thinking-code-bg)] prose-kbd:cct-text-[var(--cct-thinking-text)] ${PROSE_CODE_RESET} prose-code:cct-bg-[var(--cct-thinking-code-bg)] prose-code:cct-text-[var(--cct-thinking-code-text)] prose-pre:cct-bg-[var(--cct-thinking-pre-bg)] prose-pre:cct-text-[var(--cct-thinking-text)]`
 
 export const PROSE_SKILL = `${PROSE_BASE} prose-headings:cct-mt-3 prose-headings:cct-mb-2 prose-p:cct-my-1 prose-ul:cct-my-1 prose-ol:cct-my-1 prose-li:cct-my-0.5 prose-pre:cct-my-2`
 
