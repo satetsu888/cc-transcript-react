@@ -26,7 +26,10 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: ${isDark ? '#111827' : '#f5f5f5'}; color: ${isDark ? '#d1d5db' : '#374151'}; padding: 2rem; }
-    h1 { font-size: 1.5rem; margin-bottom: 1.5rem; color: ${isDark ? '#f9fafb' : '#111827'}; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: ${isDark ? '#f9fafb' : '#111827'}; }
+    .description { margin-bottom: 1.5rem; font-size: 0.85rem; color: ${isDark ? '#9ca3af' : '#6b7280'}; line-height: 1.5; }
+    .description a { color: ${isDark ? '#93c5fd' : '#2563eb'}; text-decoration: none; }
+    .description a:hover { text-decoration: underline; }
     table { width: 100%; border-collapse: collapse; background: ${isDark ? '#1f2937' : '#fff'}; border-radius: 0.75rem; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,${isDark ? '0.4' : '0.1'}); }
     th { text-align: left; padding: 0.75rem 1rem; background: ${isDark ? '#111827' : '#f9fafb'}; border-bottom: 2px solid ${isDark ? '#374151' : '#e5e7eb'}; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; color: ${isDark ? '#9ca3af' : '#6b7280'}; }
     td { padding: 0.75rem 1rem; border-bottom: 1px solid ${isDark ? '#374151' : '#e5e7eb'}; font-size: 0.9rem; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -36,6 +39,10 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
 </head>
 <body>
   <h1>Claude Code Sessions</h1>
+  <p class="description">
+    This page is served by <a href="https://github.com/satetsu888/cc-transcript-react" target="_blank">cc-transcript-react</a> — a React component for rendering Claude Code transcripts.<br>
+    Click a session below to view its full conversation transcript.
+  </p>
   ${sessions.length === 0
     ? '<div class="empty">No sessions found.</div>'
     : `<table>
