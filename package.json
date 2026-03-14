@@ -1,6 +1,6 @@
 {
   "name": "cc-transcript-react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React component for displaying Claude Code transcripts",
   "license": "MIT",
   "author": "satetsu888",
