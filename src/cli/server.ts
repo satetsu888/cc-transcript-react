@@ -79,7 +79,7 @@ export function startServer(options: ServerOptions): Promise<http.Server> {
         .map(s => ({
           sessionId: s.sessionId,
           firstPrompt: s.firstPrompt,
-          summary: s.summary,
+          lastPrompt: s.lastPrompt,
           messageCount: s.messageCount,
           modified: s.modified,
           projectPath: s.projectPath,

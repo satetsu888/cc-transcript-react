@@ -6,12 +6,12 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
     const modified = new Date(s.modified).toLocaleString()
     const project = s.projectPath.split('/').slice(-2).join('/')
     const prompt = escapeHtml(truncate(s.firstPrompt, 80))
-    const summary = escapeHtml(truncate(s.summary || '', 60))
+    const lastPrompt = escapeHtml(truncate(s.lastPrompt || '', 60))
     return `
       <tr onclick="location.href='/session/${s.sessionId}'" style="cursor:pointer">
         <td>${escapeHtml(project)}</td>
         <td>${prompt}</td>
-        <td>${summary}</td>
+        <td>${lastPrompt}</td>
         <td style="text-align:right">${s.messageCount}</td>
         <td>${modified}</td>
       </tr>`
@@ -49,7 +49,7 @@ export function sessionListPage(sessions: SessionEntry[], colorScheme: 'light' |
       <thead><tr>
         <th>Project</th>
         <th>First Prompt</th>
-        <th>Summary</th>
+        <th>Last Prompt</th>
         <th style="text-align:right">Messages</th>
         <th>Modified</th>
       </tr></thead>
